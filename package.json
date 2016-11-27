@@ -1,0 +1,129 @@
+{
+  "name": "ethjs-unit",
+  "version": "0.0.1",
+  "description": "A simple module for handling Ethereum units (e.g. 'ether', 'wei', etc...)",
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "npm test",
+    "test": "mocha src/tests/**/*.js -R spec --timeout 2000000",
+    "release": "npmpub",
+    "pretest": "npm run lint",
+    "lint": "npm run lint:js",
+    "lint:eslint": "eslint --ignore-path .gitignore",
+    "lint:js": "npm run lint:eslint -- . ",
+    "lint:staged": "lint-staged",
+    "coveralls": "cat ./coverage/lcov/lcov.info | coveralls"
+  },
+  "dependencies": {
+    "bignumber.js": "^3.0.1"
+  },
+  "keywords": [
+    "ethereum",
+    "encoding",
+    "decoding"
+  ],
+  "author": "Nick Dodson <thenickdodson@gmail.com>",
+  "contributors": [
+    {
+      "name": "Marek Kotewicz",
+      "email": "marek@ethdev.com",
+      "url": "https://github.com/debris"
+    },
+    {
+      "name": "Fabian Vogelsteller",
+      "email": "fabian@ethdev.com",
+      "homepage": "http://frozeman.de"
+    },
+    {
+      "name": "Marian Oancea",
+      "email": "marian@ethdev.com",
+      "url": "https://github.com/cubedro"
+    },
+    {
+      "name": "Gav Wood",
+      "email": "g@ethdev.com",
+      "homepage": "http://gavwood.com"
+    },
+    {
+      "name": "Jeffery Wilcke",
+      "email": "jeff@ethdev.com",
+      "url": "https://github.com/obscuren"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/silentcicero/ethjs-unit"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "babel-eslint": "7.1.0",
+    "chai": "^3.5.0",
+    "coveralls": "2.11.9",
+    "eslint": "2.10.1",
+    "eslint-config-airbnb": "9.0.1",
+    "eslint-import-resolver-webpack": "0.2.4",
+    "eslint-plugin-import": "1.8.0",
+    "eslint-plugin-jsx-a11y": "1.2.0",
+    "eslint-plugin-react": "5.1.1",
+    "eventsource-polyfill": "0.9.6",
+    "lint-staged": "1.0.1",
+    "mocha": "^3.1.2",
+    "pre-commit": "1.1.3",
+    "web3": "^0.17.0-beta"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      [
+        "module-resolver",
+        {
+          "root": [
+            "./src"
+          ]
+        }
+      ]
+    ]
+  },
+  "lint-staged": {
+    "lint:eslint": "*.js"
+  },
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "extends": "airbnb",
+    "env": {
+      "node": true,
+      "mocha": true,
+      "es6": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    },
+    "rules": {
+      "import/no-unresolved": 2,
+      "comma-dangle": [
+        2,
+        "always-multiline"
+      ],
+      "indent": [
+        2,
+        2,
+        {
+          "SwitchCase": 1
+        }
+      ],
+      "no-console": 1,
+      "max-len": 0,
+      "prefer-template": 2,
+      "no-use-before-define": 0,
+      "newline-per-chained-call": 0,
+      "arrow-body-style": [
+        2,
+        "as-needed"
+      ]
+    }
+  },
+  "pre-commit": "lint:staged"
+}
