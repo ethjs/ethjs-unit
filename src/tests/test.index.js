@@ -17,7 +17,7 @@ function testRandomUnitAndNumber() {
 describe('units', () => {
   describe('normal functionality', () => {
     it('should function as web3 does, without string return', () => {
-      for (var i = 0; i < 1000; i++) { // eslint-disable-line
+      for (var i = 0; i < 100000; i++) { // eslint-disable-line
         testRandomUnitAndNumber();
       }
     });
