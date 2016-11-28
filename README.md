@@ -2,19 +2,19 @@
 
 <div>
   <!-- Dependency Status -->
-  <a href="https://david-dm.org/SilentCicero/ethjs-unit">
-    <img src="https://david-dm.org/SilentCicero/ethjs-unit.svg"
+  <a href="https://david-dm.org/ethjs/ethjs-unit">
+    <img src="https://david-dm.org/ethjs/ethjs-unit.svg"
     alt="Dependency Status" />
   </a>
 
   <!-- devDependency Status -->
-  <a href="https://david-dm.org/SilentCicero/ethjs-unit#info=devDependencies">
-    <img src="https://david-dm.org/SilentCicero/ethjs-unit/dev-status.svg" alt="devDependency Status" />
+  <a href="https://david-dm.org/ethjs/ethjs-unit#info=devDependencies">
+    <img src="https://david-dm.org/ethjs/ethjs-unit/dev-status.svg" alt="devDependency Status" />
   </a>
 
   <!-- Build Status -->
-  <a href="https://travis-ci.org/SilentCicero/ethjs-unit">
-    <img src="https://travis-ci.org/SilentCicero/ethjs-unit.svg"
+  <a href="https://travis-ci.org/ethjs/ethjs-unit">
+    <img src="https://travis-ci.org/ethjs/ethjs-unit.svg"
     alt="Build Status" />
   </a>
 
@@ -22,6 +22,11 @@
   <a href="https://www.npmjs.org/package/ethjs-unit">
     <img src="http://img.shields.io/npm/v/ethjs-unit.svg"
     alt="NPM version" />
+  </a>
+
+  <!-- Test Coverage -->
+  <a href="https://coveralls.io/r/ethjs/ethjs-unit">
+    <img src="https://coveralls.io/repos/github/ethjs/ethjs-unit/badge.svg" alt="Test Coverage" />
   </a>
 
   <!-- Javascript Style -->
@@ -128,13 +133,13 @@ There is always a lot of work to do, and will have many rules to maintain. So pl
 
 Please consult our [Code of Conduct](CODE_OF_CONDUCT.md) docs before helping out.
 
-We communicate via [issues](https://github.com/SilentCicero/ethjs-unit/issues) and [pull requests](https://github.com/SilentCicero/ethjs-unit/pulls).
+We communicate via [issues](https://github.com/ethjs/ethjs-unit/issues) and [pull requests](https://github.com/ethjs/ethjs-unit/pulls).
 
 ## Important documents
 
 - [Changelog](CHANGELOG.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
-- [License](https://raw.githubusercontent.com/SilentCicero/ethjs-unit/master/LICENSE)
+- [License](https://raw.githubusercontent.com/ethjs/ethjs-unit/master/LICENSE)
 
 ## Licence
 
