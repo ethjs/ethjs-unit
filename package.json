@@ -1,6 +1,6 @@
 {
   "name": "ethjs-unit",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple module for handling Ethereum units (e.g. 'ether', 'wei', etc...)",
   "main": "./src/index.js",
   "scripts": {
@@ -12,16 +12,22 @@
     "lint:eslint": "eslint --ignore-path .gitignore",
     "lint:js": "npm run lint:eslint -- . ",
     "lint:staged": "lint-staged",
-    "coveralls": "cat ./coverage/lcov/lcov.info | coveralls"
+    "test-travis": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- src/tests/**/*.js -R spec --timeout 2000000",
+    "coveralls": "npm run test-travis && cat ./coverage/lcov.info | coveralls"
+  },
+  "engines": {
+    "npm": ">=3",
+    "node": ">=6.5.0"
   },
   "dependencies": {
-    "bignumber.js": "^3.0.1"
+    "bignumber.js": "3.0.1"
   },
   "devDependencies": {
     "babel-eslint": "7.1.0",
-    "chai": "^3.5.0",
+    "chai": "3.5.0",
     "coveralls": "2.11.9",
     "eslint": "2.10.1",
+    "istanbul": "0.4.5",
     "eslint-config-airbnb": "9.0.1",
     "eslint-import-resolver-webpack": "0.2.4",
     "eslint-plugin-import": "1.8.0",
@@ -29,9 +35,9 @@
     "eslint-plugin-react": "5.1.1",
     "eventsource-polyfill": "0.9.6",
     "lint-staged": "1.0.1",
-    "mocha": "^3.1.2",
+    "mocha": "3.1.2",
     "pre-commit": "1.1.3",
-    "web3": "^0.17.0-beta"
+    "web3": "0.17.0-beta"
   },
   "keywords": [
     "ethereum",

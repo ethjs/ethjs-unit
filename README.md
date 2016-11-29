@@ -72,7 +72,6 @@ isBigNumber     <Function (value) : (Boolean)>
 toBigNumber     <Function (value) : (BigNumber)>
 toWei           <Function (value, unit) : (BigNumber)>
 fromWei         <Function (value, unit) : (BigNumber)>
-getValueOfUnit  <Function (value) : (BigNumber)>
 ```
 
 ## Supported Units

@@ -143,5 +143,4 @@ module.exports = {
   toBigNumber,
   toWei,
   fromWei,
-  getValueOfUnit,
 };

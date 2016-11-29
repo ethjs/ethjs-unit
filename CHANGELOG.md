@@ -1,3 +1,9 @@
+# 0.0.2 -- ethjs-unit
+
+1. More test coverage
+2. Config
+3. More docs
+
 # 0.0.1 -- ethjs-unit
 
 1. Basic testing
