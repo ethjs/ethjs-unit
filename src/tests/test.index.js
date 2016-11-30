@@ -24,6 +24,15 @@ describe('units', () => {
   });
 });
 
+describe('getValueOfUnit', () => {
+  it('should throw when undefined or not string', () => {
+    function invalidFromWei() {
+      units.fromWei(1000000000000000000, 'something');
+    }
+    assert.throws(invalidFromWei, Error);
+  });
+});
+
 describe('fromWei', () => {
   it('should return the correct value', () => {
     assert.equal(units.fromWei(1000000000000000000, 'wei').toString(10), '1000000000000000000');
