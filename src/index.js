@@ -43,7 +43,7 @@ function getValueOfUnit(unitInput) {
   const unit = unitInput ? unitInput.toLowerCase() : 'ether';
   var unitValue = unitMap[unit]; // eslint-disable-line
 
-  if (typeof unitValue === undefined) {
+  if (typeof unitValue !== 'string') {
     throw new Error(`This unit doesn't exists, please use the one of the following units ${JSON.stringify(unitMap, null, 2)}`);
   }
 
