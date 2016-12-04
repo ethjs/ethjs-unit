@@ -169,6 +169,22 @@ Make sure you know which BigNumber modules you are using, and watchout for your 
 This module has two methods for helping handling the `BigNumber` objects. `isBigNumber` and `toBigNumber` which can help you convert values to the BigNumber object.
 
 
+## Browser Builds
+
+`ethjs` provides production distributions for all of its modules that are ready for use in the browser right away. Simply include either `dist/ethjs-unit.js` or `dist/ethjs-unit.min.js` directly into an HTML file to start using this module. Note, an `ethUnit` object is made available globally.
+
+```html
+<script type="text/javascript" src="ethjs-unit.min.js"></script>
+<script type="text/javascript">
+ethUnit(...);
+</script>
+```
+
+Note, even though `ethjs` should have transformed and polyfilled most of the requirements to run this module across most modern browsers. You may want to look at an additional polyfill for extra support.
+
+Use a polyfill service such as `Polyfill.io` to ensure complete cross-browser support:
+https://polyfill.io/
+
 ## Other Awesome Modules, Tools and Frameworks
 
  - [web3.js](https://github.com/ethereum/web3.js) -- the original Ethereum swiss army knife **Ethereum Foundation**
