@@ -1,6 +1,6 @@
 {
   "name": "ethjs-unit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple module for handling Ethereum units (e.g. 'ether', 'wei', etc...)",
   "main": "lib/index.js",
   "browser": "dist/ethjs-sha3.js",
