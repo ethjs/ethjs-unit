@@ -1,28 +1,32 @@
 const units = require('../index.js'); // eslint-disable-line
-const BigNumber = require('bignumber.js'); // eslint-disable-line
+const BigNumber = require('bn.js'); // eslint-disable-line
+const ActualBigNumber = require('bignumber.js');
 const Web3 = require('web3'); // eslint-disable-line
 const web3 = new Web3(); // eslint-disable-line
 const assert = require('chai').assert; // eslint-disable-line
+const totalTypes = Object.keys(units.unitMap).length;
 
-function testRandomunitsAndNumber() {
-  const stringTestValue = String(Math.floor((Math.random() * 1000000000000000) + 1));
-  const testValue = new BigNumber(stringTestValue);
-  const totalTypes = Object.keys(units.unitMap).length;
+function testRandomValueAgainstWeb3ToWei(negative) {
+  const stringTestValue = `${negative ? '-' : ''}${String(Math.floor((Math.random() * 100000000000000000) + 1))}`;
   const randomunitsType = Object.keys(units.unitMap)[Math.floor((Math.random() * (totalTypes - 1)) + 1)];
+  const unitsValue = units.toWei(stringTestValue, randomunitsType);
+  const web3Value = new BigNumber(web3.toWei(stringTestValue, randomunitsType));
 
-  assert.equal(units.toWei(testValue, randomunitsType).toString(10), web3.toWei(testValue, randomunitsType).toString(10));
-  assert.equal(units.fromWei(testValue, randomunitsType).toString(10), web3.fromWei(testValue, randomunitsType).toString(10));
+  it(`toWei should work like web3 val ${unitsValue.toString(10)} should equal ${web3Value.toString(10)}`, () => {
+    assert.deepEqual(unitsValue, web3Value);
+  });
 }
 
-describe('units', () => {
-  describe('normal functionality', () => {
-    it('should function as web3 does, without string return', () => {
-      for (var i = 0; i < 100000; i++) { // eslint-disable-line
-        testRandomunitsAndNumber();
-      }
-    });
+function testRandomValueAgainstWeb3FromWei(negative) {
+  const stringTestValue = `${negative ? '-' : ''}${String(Math.floor((Math.random() * 100000000000000000) + 1))}`;
+  const randomunitsType = Object.keys(units.unitMap)[Math.floor((Math.random() * (totalTypes - 1)) + 1)];
+  const unitsValue = units.fromWei(stringTestValue, randomunitsType);
+  const web3Value = web3.fromWei(stringTestValue, randomunitsType);
+
+  it(`fromWei should work like web3 rounded val ${unitsValue.substr(0, web3Value.length - 1)} should equal ${web3Value.substr(0, web3Value.length - 1)} for unit type ${randomunitsType}`, () => {
+    assert.deepEqual(unitsValue.substr(0, web3Value.length - 1), web3Value.substr(0, web3Value.length - 1));
   });
-});
+}
 
 describe('getValueOfUnit', () => {
   it('should throw when undefined or not string', () => {
@@ -33,24 +37,16 @@ describe('getValueOfUnit', () => {
   });
 });
 
-describe('fromWei', () => {
-  it('should return the correct value', () => {
-    assert.equal(units.fromWei(1000000000000000000, 'wei').toString(10), '1000000000000000000');
-    assert.equal(units.fromWei(1000000000000000000, 'kwei').toString(10), '1000000000000000');
-    assert.equal(units.fromWei(1000000000000000000, 'mwei').toString(10), '1000000000000');
-    assert.equal(units.fromWei(1000000000000000000, 'gwei').toString(10), '1000000000');
-    assert.equal(units.fromWei(1000000000000000000, 'szabo').toString(10), '1000000');
-    assert.equal(units.fromWei(1000000000000000000, 'finney').toString(10), '1000');
-    assert.equal(units.fromWei(1000000000000000000, 'ether').toString(10), '1');
-    assert.equal(units.fromWei(1000000000000000000, 'kether').toString(10), '0.001');
-    assert.equal(units.fromWei(1000000000000000000, 'grand').toString(10), '0.001');
-    assert.equal(units.fromWei(1000000000000000000, 'mether').toString(10), '0.000001');
-    assert.equal(units.fromWei(1000000000000000000, 'gether').toString(10), '0.000000001');
-    assert.equal(units.fromWei(1000000000000000000, 'tether').toString(10), '0.000000000001');
-  });
-});
-
 describe('toWei', () => {
+  it('should handle edge cases', () => {
+    assert.equal(units.toWei(0, 'wei').toString(10), '0');
+    assert.equal(units.toWei('0.0', 'wei').toString(10), '0');
+    assert.equal(units.toWei('.3', 'ether').toString(10), '300000000000000000');
+    assert.throws(() => units.toWei('.', 'wei'), Error);
+    assert.throws(() => units.toWei('1.243842387924387924897423897423', 'ether'), Error);
+    assert.throws(() => units.toWei('8723.98234.98234', 'ether'), Error);
+  });
+
   it('should return the correct value', () => {
     assert.equal(units.toWei(1, 'wei').toString(10), '1');
     assert.equal(units.toWei(1, 'kwei').toString(10), '1000');
@@ -81,61 +77,60 @@ describe('toWei', () => {
   });
 });
 
-const tests = [
-  { value: function () {}, is: false }, // eslint-disable-line
-  { value: new Function(), is: false }, // eslint-disable-line
-  { value: 'function', is: false },
-  { value: {}, is: false },
-  { value: new String('hello'), is: false }, // eslint-disable-line
-  { value: new BigNumber(0), is: true },
-  { value: 132, is: false },
-  { value: '0x12', is: false },
-];
-
-describe('isBigNumber', () => {
-  tests.forEach((test) => {
-    it(`shoud test if value ${test.value} is BigNumber: ${test.is}`, () => {
-      assert.equal(units.isBigNumber(test.value), test.is);
-    });
+describe('numberToString', () => {
+  it('should handle edge cases', () => {
+    // assert.throws(() => units.numberToString(null), Error);
+    assert.throws(() => units.numberToString(undefined), Error);
+    // assert.throws(() => units.numberToString(NaN), Error);
+    assert.throws(() => units.numberToString({}), Error);
+    assert.throws(() => units.numberToString([]), Error);
+    assert.throws(() => units.numberToString('-1sdffsdsdf'), Error);
+    assert.throws(() => units.numberToString('-0..-...9'), Error);
+    assert.throws(() => units.numberToString('fds'), Error);
+    assert.throws(() => units.numberToString(''), Error);
+    assert.throws(() => units.numberToString('#'), Error);
+    assert.equal(units.numberToString(55), '55');
+    assert.equal(units.numberToString(1), '1');
+    assert.equal(units.numberToString(-1), '-1');
+    assert.equal(units.numberToString(0), '0');
+    assert.equal(units.numberToString(-0), '0');
+    assert.equal(units.numberToString(new ActualBigNumber(10.1)), '10.1');
+    assert.equal(units.numberToString(new ActualBigNumber(10000)), '10000');
+    assert.equal(units.numberToString(new BigNumber(10000)), '10000');
+    assert.equal(units.numberToString(new BigNumber('-1')), '-1');
+    assert.equal(units.numberToString(new BigNumber('1')), '1');
+    assert.equal(units.numberToString(new BigNumber(0)), '0');
   });
 });
 
+describe('fromWei', () => {
+  it('should handle options', () => {
+    assert.equal(units.fromWei(10000000, 'wei', { commify: true }), '10,000,000');
+  });
 
-const toBigNumberTests = [
-  { value: 1, expected: '1' },
-  { value: '1', expected: '1' },
-  { value: '0x1', expected: '1' },
-  { value: '0x01', expected: '1' },
-  { value: 15, expected: '15' },
-  { value: '15', expected: '15' },
-  { value: '0xf', expected: '15' },
-  { value: '0x0f', expected: '15' },
-  { value: new BigNumber('f', 16), expected: '15' },
-  { value: -1, expected: '-1' },
-  { value: '-1', expected: '-1' },
-  { value: '-0x1', expected: '-1' },
-  { value: '-0x01', expected: '-1' },
-  { value: -15, expected: '-15' },
-  { value: '-15', expected: '-15' },
-  { value: '-0xf', expected: '-15' },
-  { value: '-0x0f', expected: '-15' },
-  { value: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', expected: '115792089237316195423570985008687907853269984665640564039457584007913129639935' },
-  { value: '0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd', expected: '115792089237316195423570985008687907853269984665640564039457584007913129639933' },
-  { value: '-0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639935' },
-  { value: '-0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd', expected: '-115792089237316195423570985008687907853269984665640564039457584007913129639933' },
-  { value: 0, expected: '0' },
-  { value: '0', expected: '0' },
-  { value: '0x0', expected: '0' },
-  { value: -0, expected: '0' },
-  { value: '-0', expected: '0' },
-  { value: '-0x0', expected: '0' },
-  { value: new BigNumber(0), expected: '0' },
-];
+  it('should return the correct value', () => {
+    assert.equal(units.fromWei(1000000000000000000, 'wei'), '1000000000000000000');
+    assert.equal(units.fromWei(1000000000000000000, 'kwei'), '1000000000000000');
+    assert.equal(units.fromWei(1000000000000000000, 'mwei'), '1000000000000');
+    assert.equal(units.fromWei(1000000000000000000, 'gwei'), '1000000000');
+    assert.equal(units.fromWei(1000000000000000000, 'szabo'), '1000000');
+    assert.equal(units.fromWei(1000000000000000000, 'finney'), '1000');
+    assert.equal(units.fromWei(1000000000000000000, 'ether'), '1');
+    assert.equal(units.fromWei(1000000000000000000, 'kether'), '0.001');
+    assert.equal(units.fromWei(1000000000000000000, 'grand'), '0.001');
+    assert.equal(units.fromWei(1000000000000000000, 'mether'), '0.000001');
+    assert.equal(units.fromWei(1000000000000000000, 'gether'), '0.000000001');
+    assert.equal(units.fromWei(1000000000000000000, 'tether'), '0.000000000001');
+  });
+});
 
-describe('toBigNumber', () => {
-  toBigNumberTests.forEach((test) => {
-    it(`should turn ${test.value} to 4 ${test.expected}`, () => {
-      assert.equal(units.toBigNumber(test.value).toString(10), test.expected);
-    });
+describe('units', () => {
+  describe('normal functionality', () => {
+    for (var i = 0; i < 25000; i++) { // eslint-disable-line
+      testRandomValueAgainstWeb3ToWei(false);
+      testRandomValueAgainstWeb3ToWei(true);
+      testRandomValueAgainstWeb3FromWei(false);
+      testRandomValueAgainstWeb3FromWei(true);
+    }
   });
 });

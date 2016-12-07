@@ -52,26 +52,26 @@ const unit = require('ethjs-unit');
 
 var val1 = unit.toWei(249824778, 'ether');
 
-// result <BigNumber ...>
+// result <BN ...> 249824778000000000000000000
 
 var val2 = unit.fromWei('7282837', 'finney');
 
-// result <BigNumber ...>
+// result '0.00000'
 ```
 
 ## About
 
 A port from the `web3.js` library, that just handles the unit convertion between the various types of Ethereum currency units.
 
-Note, the `toWei` and `fromWei` methods always return a `BigNumber` object.
+Note, the `toWei` returns a BN instance while `fromWei` always returns a string number.
 
-## Methods Available
+## Methods Available & Objects
 
 ```
-isBigNumber     <Function (value) : (Boolean)>
-toBigNumber     <Function (value) : (BigNumber)>
-toWei           <Function (value, unit) : (BigNumber)>
-fromWei         <Function (value, unit) : (BigNumber)>
+unitMap         { unitName: singleUnitWeiValue, ... }
+getValueOfUnit  <Function (unit) : (BN)>
+toWei           <Function (value, unit) : (BN)>
+fromWei         <Function (value, unit) : (String)>
 ```
 
 ## Supported Units
@@ -104,6 +104,16 @@ fromWei         <Function (value, unit) : (BigNumber)>
 'gether':       '1000000000000000000000000000',
 'tether':       '1000000000000000000000000000000'
 ```
+
+## Why BN.js?
+
+`ethjs` has made a policy of using `BN.js` accross all of it's repositories. Here are the reasons why:
+
+  1. lighter than alternatives (BigNumber.js)
+  2. faster than most alternatives, see [benchmarks](https://github.com/indutny/bn.js/issues/89)
+  3. used by the Ethereum foundation across all [`ethereumjs`](https://github.com/ethereumjs) repositories
+  4. is already used by a critical JS dependency of many ethereum packages, see package [`elliptic`](https://github.com/indutny/elliptic)
+  5. purposefully does not support decimals or floats (for greater precision), remember, the Ethereum blockchain cannot and will not support float values or decimal numbers
 
 ## Contributing
 
@@ -165,7 +175,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
-
-## Original Port Authors
-
-ethdev.com

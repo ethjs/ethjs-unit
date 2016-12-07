@@ -1,4 +1,8 @@
-const BigNumber = require('bignumber.js');
+const BN = require('bn.js');
+const numberToBN = require('number-to-bn');
+
+const zero = new BN(0);
+const negative1 = new BN(-1);
 
 // complete ethereum unit map
 const unitMap = {
@@ -44,103 +48,108 @@ function getValueOfUnit(unitInput) {
   var unitValue = unitMap[unit]; // eslint-disable-line
 
   if (typeof unitValue !== 'string') {
-    throw new Error(`This unit doesn't exists, please use the one of the following units ${JSON.stringify(unitMap, null, 2)}`);
+    throw new Error(`[ethjs-unit] the unit provided ${unitInput} doesn't exists, please use the one of the following units ${JSON.stringify(unitMap, null, 2)}`);
   }
 
-  return new BigNumber(unitValue, 10);
+  return new BN(unitValue, 10);
 }
 
-/**
- * Takes a number of wei and converts it to any other ether unit.
- *
- * Possible units are:
- *   SI Short   SI Full        Effigy       Other
- * - kwei       femtoether     babbage
- * - mwei       picoether      lovelace
- * - gwei       nanoether      shannon      nano
- * - --         microether     szabo        micro
- * - --         milliether     finney       milli
- * - ether      --             --
- * - kether                    --           grand
- * - mether
- * - gether
- * - tether
- *
- * @method fromWei
- * @param {Number|String} number can be a number, number string or a HEX of a decimal
- * @param {String} unit the unit to convert to, default ether
- * @return {Object} When given a BigNumber object it returns one as well, otherwise a number
-*/
-function fromWei(number, unit) {
-  const returnValue = toBigNumber(number).dividedBy(getValueOfUnit(unit));
-
-  return returnValue;
+function numberToString(arg) {
+  if (typeof arg === 'string') {
+    if (!arg.match(/^-?[0-9.]+$/)) {
+      throw new Error(`while converting number to string, invalid number value '${arg}', should be a number matching (^-?[0-9.]+).`);
+    }
+    return arg;
+  } else if (typeof arg === 'number') {
+    return String(arg);
+  } else if (typeof arg === 'object' && arg.toString && (arg.toTwos || arg.dividedToIntegerBy)) {
+    if (arg.toPrecision) {
+      return String(arg.toPrecision());
+    } else { // eslint-disable-line
+      return arg.toString(10);
+    }
+  }
+  throw new Error(`while converting number to string, invalid number value '${arg}' type ${typeof arg}.`);
 }
 
-/**
- * Takes a number of a unit and converts it to wei.
- *
- * Possible units are:
- *   SI Short   SI Full        Effigy       Other
- * - kwei       femtoether     babbage
- * - mwei       picoether      lovelace
- * - gwei       nanoether      shannon      nano
- * - --         microether     szabo        micro
- * - --         microether     szabo        micro
- * - --         milliether     finney       milli
- * - ether      --             --
- * - kether                    --           grand
- * - mether
- * - gether
- * - tether
- *
- * @method toWei
- * @param {Number|String|BigNumber} number can be a number, number string or a HEX of a decimal
- * @param {String} unit the unit to convert from, default ether
- * @return {Object} When given a BigNumber object it returns one as well, otherwise a number
-*/
-function toWei(number, unit) {
-  const returnValue = toBigNumber(number).times(getValueOfUnit(unit));
+function fromWei(weiInput, unit, optionsInput) {
+  var wei = numberToBN(weiInput); // eslint-disable-line
+  var negative = wei.lt(zero); // eslint-disable-line
+  const base = getValueOfUnit(unit);
+  const baseLength = unitMap[unit].length - 1 || 1;
+  const options = optionsInput || {};
 
-  return returnValue;
-}
-
-/**
- * Returns true if object is BigNumber, otherwise false
- *
- * @method isBigNumber
- * @param {Object}
- * @return {Boolean}
- */
-function isBigNumber(object) {
-  return object instanceof BigNumber || (object && object.constructor && object.constructor.name === 'BigNumber');
-}
-
-/**
- * Takes an input and transforms it into an bignumber
- *
- * @method toBigNumber
- * @param {Number|String|BigNumber} a number, string, HEX string or BigNumber
- * @return {BigNumber} BigNumber
-*/
-function toBigNumber(numberInput) {
-  const number = numberInput || 0;
-
-  if (isBigNumber(number)) {
-    return number;
+  if (negative) {
+    wei = wei.mul(negative1);
   }
 
-  if (typeof number === 'string' && (number.indexOf('0x') === 0 || number.indexOf('-0x') === 0)) {
-    return new BigNumber(number.replace('0x', ''), 16);
+  var fraction = wei.mod(base).toString(10); // eslint-disable-line
+
+  while (fraction.length < baseLength) {
+    fraction = `0${fraction}`;
   }
 
-  return new BigNumber(number.toString(10), 10);
+  if (!options.pad) {
+    fraction = fraction.match(/^([0-9]*[1-9]|0)(0*)/)[1];
+  }
+
+  var whole = wei.div(base).toString(10); // eslint-disable-line
+
+  if (options.commify) {
+    whole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  var value = `${whole}${fraction == '0' ? '' : `.${fraction}`}`; // eslint-disable-line
+
+  if (negative) {
+    value = `-${value}`;
+  }
+
+  return value;
+}
+
+function toWei(etherInput, unit) {
+  var ether = numberToString(etherInput); // eslint-disable-line
+  const base = getValueOfUnit(unit);
+  const baseLength = unitMap[unit].length - 1 || 1;
+
+  // Is it negative?
+  var negative = (ether.substring(0, 1) === '-'); // eslint-disable-line
+  if (negative) {
+    ether = ether.substring(1);
+  }
+
+  if (ether === '.') { throw new Error(`[ethjs-unit] while converting number ${etherInput} to wei, invalid value`); }
+
+  // Split it into a whole and fractional part
+  var comps = ether.split('.'); // eslint-disable-line
+  if (comps.length > 2) { throw new Error(`[ethjs-unit] while converting number ${etherInput} to wei,  too many decimal points`); }
+
+  var whole = comps[0], fraction = comps[1]; // eslint-disable-line
+
+  if (!whole) { whole = '0'; }
+  if (!fraction) { fraction = '0'; }
+  if (fraction.length > baseLength) { throw new Error(`[ethjs-unit] while converting number ${etherInput} to wei, too many decimal places`); }
+
+  while (fraction.length < baseLength) {
+    fraction += '0';
+  }
+
+  whole = new BN(whole);
+  fraction = new BN(fraction);
+  var wei = (whole.mul(base)).add(fraction); // eslint-disable-line
+
+  if (negative) {
+    wei = wei.mul(negative1);
+  }
+
+  return new BN(wei.toString(10), 10);
 }
 
 module.exports = {
   unitMap,
-  isBigNumber,
-  toBigNumber,
-  toWei,
+  numberToString,
+  getValueOfUnit,
   fromWei,
+  toWei,
 };

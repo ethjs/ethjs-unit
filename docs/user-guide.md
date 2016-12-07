@@ -15,11 +15,11 @@ const unit = require('ethjs-unit');
 
 var val1 = unit.toWei(249824778, 'ether');
 
-// result <BigNumber ...>
+// result <BN ...> 249824778000000000000000000
 
-var val2 = unit.fromWei('7282837', 'finney');
+var val2 = unit.fromWei('7282837', 'ether');
 
-// result <BigNumber ...>
+// result '0.00000000000000007282837'
 });
 ```
 
@@ -29,92 +29,42 @@ var val2 = unit.fromWei('7282837', 'finney');
 
 [index.js:ethjs-unit](../../../blob/master/src/index.js "Source code on GitHub")
 
-Convert a single Ethereum denominated value at a specified unit, and convert it to its `wei` value. Intakes a `value` and `unit` specifier, outputs a single wei value `BigNumber` object.
+Convert a single Ethereum denominated value at a specified unit, and convert it to its `wei` value. Intakes a `value` and `unit` specifier, outputs a single wei value `BN` object.
 
 **Parameters**
 
--   `value` **BigNumber|Number|String** a single number `wei` value
+-   `value` **Object|Number|String** a single number `wei` value as a integer, BN.js object instance, string hex integer, BN.js object instance (no decimals)
 -   `unit` **String** the unit to covert to (i.e. `finney`, `ether` etc..)
 
-Result output single BigNumber **Object**.
+Result output single BN **Object**.
 
 ```js
 const unit = require('ethjs-unit');
 
 var val1 = unit.toWei(249824778, 'ether');
 
-// result <BigNumber ...> [.toString(10) : 249824778000000000000000000]
+// result <BN ...> [.toString(10) : 249824778000000000000000000]
 ```
 
 ### fromWei
 
 [index.js:ethjs-unit](../../../blob/master/src/index.js "Source code on GitHub")
 
-Convert a wei denominated value into another Ethereum denomination. Intakes a single wei `value` and outputs a BigNumber object.
+Convert a wei denominated value into another Ethereum denomination. Intakes a single wei `value` and outputs a BN object.
 
 **Parameters**
 
--   `value` **BigNumber|Number|String** a single number Ethereum denominated value
+-   `value` **Object|Number|String** a single number Ethereum denominated value
 -   `unit` **String** the unit to covert to (i.e. `finney`, `ether` etc..)
 
-Result output single BigNumber **Object**.
+Result output single **String** number.
 
 ```js
 const unit = require('ethjs-unit');
 
 var val1 = unit.fromWei(249824778000000000000000000, 'ether');
 
-// result <BigNumber ...> [.toString(10) : 49824778 ]
-```
-
-### isBigNumber
-
-[index.js:ethjs-unit](../../../blob/master/src/index.js "Source code on GitHub")
-
-Is the specified value a BigNumber object instance.
-
-**Parameters**
-
--   `value` **Optional** a single optional type value
-
-Result output is a single **Boolean** (is the value a BigNumber or not).
-
-```js
-const unit = require('ethjs-unit');
-const BigNumber = require('bignumber.js');
-
-var val1 = unit.isBigNumber(249824778000000000000000000);
-
-// result false
-
-var val1 = unit.isBigNumber(new BigNumber(10));
-
-// result true
-```
-
-### toBigNumber
-
-[index.js:ethjs-unit](../../../blob/master/src/index.js "Source code on GitHub")
-
-Convert a specified value to a BigNumber if possible.
-
-**Parameters**
-
--   `value` **String|Number|Object** a single optional type value number
-
-Result output is a single `BigNumber` **Object** a BigNumber value.
-
-```js
-const unit = require('ethjs-unit');
-const BigNumber = require('bignumber.js');
-
-var val1 = unit.toBigNumber(249824778000000000000000000);
-
-// result <BigNumber ...>
-
-var val1 = unit.toBigNumber(new BigNumber(10));
-
-// result <BigNumber ...>
+// result '249824778'
 ```
 
 ## Supported Units
@@ -148,26 +98,25 @@ var val1 = unit.toBigNumber(new BigNumber(10));
 'tether':       '1000000000000000000000000000000'
 ```
 
-## Notes on Handling BigNumber Objects
+## Why BN.js?
 
-There are two kinds of BigNumber modules most commonly used across JS:  [`bn.js`](https://github.com/indutny/bn.js/) and [`bignumber.js`](https://github.com/MikeMcl/bignumber.js/). There are many differences between the two (namely that BN is smaller and doesn't handle floats, while BigNumber handles floats but is much larger). This module uses `bignumber.js` (as it can handle decimal float values) which returns the `BigNumber` **Object** instance.
+`ethjs` has made a policy of using `BN.js` across all of its repositories. Here are some of the reasons why:
 
-We use BigNumber objects because javascript has trouble handling very large numbers, which Ethereum uses all the time across the blockchain.
+  1. lighter than alternatives (BigNumber.js)
+  2. faster than most alternatives, see [benchmarks](https://github.com/indutny/bn.js/issues/89)
+  3. used by the Ethereum foundation across all [`ethereumjs`](https://github.com/ethereumjs) repositories
+  4. is already used by a critical JS dependency of many ethereum packages, see package [`elliptic`](https://github.com/indutny/elliptic)
+  5. purposefully **does not support decimals or floats numbers** (for greater precision), remember, the Ethereum blockchain cannot and will not support float values or decimal numbers.
 
-The `BigNumber` object can be converted to a string or number with a specified base (i.e. generally `.toString(10)` for non hex values and `.toString(16)` for hex values or `toNumber(10)` and `toNumber(16)`).
+## A Note On Handling Numbers
 
-```js
-const num = new BigNumber(1000);
+If you want to handle **floats** or **decimal** numbers, `toWei` your values into their base integer wei values and do the operations (e.g. multiplying and dividing) with `BN.js`, then `fromWei` those values back into the desired denomination.
 
-num.toString(10); // result '1000'
+This is procedurally safer, more accurate and computationally faster than the alternative.
 
-num.toNumber(10); // result 1000
-```
+If you absolutely cannot do it this way, use a module like `BigNumber.js` which supports floats and decimals, but remember to convert everything back down to integer wei values when you send it to the chain.
 
-Make sure you know which BigNumber modules you are using, and watchout for your types and convertions of these numbers.
-
-This module has two methods for helping handling the `BigNumber` objects. `isBigNumber` and `toBigNumber` which can help you convert values to the BigNumber object.
-
+Remember, the Ethereum blockchain only supports integer hex number values at this time.
 
 ## Browser Builds
 
