@@ -54,9 +54,9 @@ var val1 = unit.toWei(249824778, 'ether');
 
 // result <BN ...> 249824778000000000000000000
 
-var val2 = unit.fromWei('7282837', 'finney');
+var val2 = unit.fromWei('249824778000000000000000000', 'ether');
 
-// result '0.00000'
+// result '249824778'
 ```
 
 ## About
