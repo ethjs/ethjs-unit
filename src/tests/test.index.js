@@ -12,9 +12,9 @@ function testRandomValueAgainstWeb3ToWei(negative) {
   const unitsValue = units.toWei(stringTestValue, randomunitsType);
   const web3Value = new BigNumber(web3.toWei(stringTestValue, randomunitsType));
 
-  it(`toWei should work like web3 val ${unitsValue.toString(10)} should equal ${web3Value.toString(10)}`, () => {
-    assert.deepEqual(unitsValue, web3Value);
-  });
+  // it(`toWei should work like web3 val ${unitsValue.toString(10)} should equal ${web3Value.toString(10)}`, () => {
+  assert.deepEqual(unitsValue, web3Value);
+  // });
 }
 
 function testRandomValueAgainstWeb3FromWei(negative) {
@@ -23,9 +23,9 @@ function testRandomValueAgainstWeb3FromWei(negative) {
   const unitsValue = units.fromWei(stringTestValue, randomunitsType);
   const web3Value = web3.fromWei(stringTestValue, randomunitsType);
 
-  it(`fromWei should work like web3 rounded val ${unitsValue.substr(0, web3Value.length - 1)} should equal ${web3Value.substr(0, web3Value.length - 1)} for unit type ${randomunitsType}`, () => {
-    assert.deepEqual(unitsValue.substr(0, web3Value.length - 1), web3Value.substr(0, web3Value.length - 1));
-  });
+  // it(`fromWei should work like web3 rounded val ${unitsValue.substr(0, web3Value.length - 1)} should equal ${web3Value.substr(0, web3Value.length - 1)} for unit type ${randomunitsType}`, () => {
+  assert.deepEqual(unitsValue.substr(0, web3Value.length - 1), web3Value.substr(0, web3Value.length - 1));
+  // });
 }
 
 describe('getValueOfUnit', () => {
@@ -126,11 +126,13 @@ describe('fromWei', () => {
 
 describe('units', () => {
   describe('normal functionality', () => {
-    for (var i = 0; i < 25000; i++) { // eslint-disable-line
-      testRandomValueAgainstWeb3ToWei(false);
-      testRandomValueAgainstWeb3ToWei(true);
-      testRandomValueAgainstWeb3FromWei(false);
-      testRandomValueAgainstWeb3FromWei(true);
-    }
+    it('should be the same as web3', () => {
+      for (var i = 0; i < 15000; i++) { // eslint-disable-line
+        testRandomValueAgainstWeb3ToWei(false);
+        testRandomValueAgainstWeb3ToWei(true);
+        testRandomValueAgainstWeb3FromWei(false);
+        testRandomValueAgainstWeb3FromWei(true);
+      }
+    });
   });
 });
