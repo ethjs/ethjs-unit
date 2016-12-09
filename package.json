@@ -1,9 +1,8 @@
 {
   "name": "ethjs-unit",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A simple module for handling Ethereum units (e.g. 'ether', 'wei', etc...)",
   "main": "lib/index.js",
-  "browser": "dist/ethjs-sha3.js",
   "files": [
     "dist",
     "internals",
@@ -160,6 +159,11 @@
   ],
   "author": "Nick Dodson <thenickdodson@gmail.com>",
   "contributors": [
+    {
+      "name": "Richard Moore",
+      "email": "me@ricmoo.com",
+      "url": "https://ethers.io"
+    },
     {
       "name": "Marek Kotewicz",
       "email": "marek@ethdev.com",

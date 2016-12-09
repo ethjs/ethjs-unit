@@ -1,3 +1,8 @@
+# 0.1.3 -- config fixes
+
+1. webpack config updates
+2. build config updates
+
 # 0.1.2 -- removed BigNumber's, replaced with all BN.js
 
 1. new approach with BN.js and absolute precision
