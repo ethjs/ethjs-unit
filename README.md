@@ -107,13 +107,13 @@ fromWei         <Function (value, unit) : (String)>
 
 ## Why BN.js?
 
-`ethjs` has made a policy of using `BN.js` accross all of it's repositories. Here are the reasons why:
+`ethjs` has made a policy of using `BN.js` accross all of our modules. Here are some reasons why:
 
-  1. lighter than alternatives (BigNumber.js)
-  2. faster than most alternatives, see [benchmarks](https://github.com/indutny/bn.js/issues/89)
-  3. used by the Ethereum foundation across all [`ethereumjs`](https://github.com/ethereumjs) repositories
-  4. is already used by a critical JS dependency of many ethereum packages, see package [`elliptic`](https://github.com/indutny/elliptic)
-  5. purposefully does not support decimals or floats (for greater precision), remember, the Ethereum blockchain cannot and will not support float values or decimal numbers
+  1. Lighter than alternatives (BigNumber.js)
+  2. Faster than most alternatives, see [benchmarks](https://github.com/indutny/bn.js/issues/89)
+  3. Used by the Ethereum foundation across all [`ethereumjs`](https://github.com/ethereumjs) repositories
+  4. Is already used by a critical JS dependency of many ethereum packages, see package [`elliptic`](https://github.com/indutny/elliptic)
+  5. Does not support decimals or floats (for greater precision), remember, the Ethereum blockchain cannot and will not support float values or decimal numbers
 
 ## Contributing
 

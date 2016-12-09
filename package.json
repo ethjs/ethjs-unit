@@ -234,5 +234,5 @@
       ]
     }
   },
-  "pre-commit": "lint:staged"
+  "pre-commit": "build"
 }
