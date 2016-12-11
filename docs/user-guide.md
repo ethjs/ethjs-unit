@@ -134,6 +134,23 @@ Note, even though `ethjs` should have transformed and polyfilled most of the req
 Use a polyfill service such as `Polyfill.io` to ensure complete cross-browser support:
 https://polyfill.io/
 
+## Latest Webpack Figures
+
+```
+Version: webpack 2.1.0-beta.15
+Time: 1079ms
+            Asset    Size  Chunks             Chunk Names
+    ethjs-unit.js  154 kB       0  [emitted]  main
+ethjs-unit.js.map  189 kB       0  [emitted]  main
+    + 11 hidden modules
+
+Version: webpack 2.1.0-beta.15
+Time: 3622ms
+            Asset     Size  Chunks             Chunk Names
+ethjs-unit.min.js  69.7 kB       0  [emitted]  main
+    + 11 hidden modules
+```
+
 ## Other Awesome Modules, Tools and Frameworks
 
  - [web3.js](https://github.com/ethereum/web3.js) -- the original Ethereum swiss army knife **Ethereum Foundation**

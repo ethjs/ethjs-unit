@@ -63,7 +63,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -3515,8 +3515,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 'use strict'
 
-var base64 = __webpack_require__(5)
-var ieee754 = __webpack_require__(6)
+var base64 = __webpack_require__(4)
+var ieee754 = __webpack_require__(5)
 var isArray = __webpack_require__(7)
 
 exports.Buffer = Buffer
@@ -5299,29 +5299,9 @@ function isnan (val) {
 
 /***/ },
 /* 2 */
-/***/ function(module, exports) {
-
-/**
- * Returns a `Boolean` on whether or not the a `String` starts with '0x'
- * @param {String} str the string input value
- * @return {Boolean} a boolean if it is or is not hex prefixed
- * @throws if the str input is not a string
- */
-module.exports = function isHexPrefixed(str) {
-  if (typeof str !== 'string') {
-    throw new Error("[is-hex-prefixed] value must be type 'string', is currently type " + (typeof str) + ", while checking isHexPrefixed.");
-  }
-
-  return str.slice(0, 2) === '0x';
-}
-
-
-/***/ },
-/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 var BN = __webpack_require__(0);
-var isHexPrefixed = __webpack_require__(2);
 var stripHexPrefix = __webpack_require__(8);
 
 /**
@@ -5331,48 +5311,42 @@ var stripHexPrefix = __webpack_require__(8);
  * @throws if the argument is not an array, object that isn't a bignumber, not a string number or number
  */
 module.exports = function numberToBN(arg) {
-  var errorMessage = new Error('[number-to-bn] while converting number to BN.js object, argument "' + String(arg) + '" type "' + String(typeof(arg)) + '" must be either a negative or positive (1) integer number, (2) string integer, (3) valid prefixed hex number string, (4) BN.js object instance or a (5) bignumber.js object.');
-  if (typeof arg === 'string') {
-    if (arg.match(/0[xX][0-9a-fA-F]+/) || arg.match(/^-?[0-9]+$/)) {
-      if (isHexPrefixed(arg)) {
-        return new BN(stripHexPrefix(arg), 16);
-      } else if (arg.substr(0, 3) === '-0x') {
-        return new BN('-' + String(arg.slice(3)), 16);
-      } else { // eslint-disable-line
-        return new BN(arg, 10);
-      }
-    } else {
-      throw errorMessage;
+  if (typeof arg === 'string' || typeof arg === 'number') {
+    var multiplier = new BN(1); // eslint-disable-line
+    var stringArg = stripHexPrefix(String(arg).toLowerCase().trim()); // eslint-disable-line
+    if (stringArg.substr(0, 1) === '-') {
+      stringArg = stripHexPrefix(stringArg.slice(1));
+      multiplier = new BN(-1);
     }
-  } else if (typeof arg === 'number' && String(arg).match(/^-?[0-9]+$/)) {
-    return new BN(String(arg));
-  } else if (typeof arg === 'object'
-    && arg.toString
-    && (!arg.pop && !arg.push)) {
-    if (arg.toString(10).match(/^-?[0-9]+$/)) {
-      if (arg.toArray && arg.toTwos) {
-        return arg;
-      } else {
-        return new BN(arg.toString(10));
-      }
-    } else {
-      throw errorMessage;
+
+    if (!stringArg.match(/^-?[0-9]+$/) &&
+      stringArg.match(/^[0-9A-Fa-f]+$/)
+      || stringArg.match(/^[a-fA-F]+$/)) {
+      return new BN(stringArg, 16).mul(multiplier);
     }
-  } else {
-    throw errorMessage;
+
+    if (stringArg.match(/^-?[0-9]+$/) || stringArg === '') {
+      return new BN(stringArg, 10).mul(multiplier);
+    }
+  } else if (typeof arg === 'object' && arg.toString && (!arg.pop && !arg.push)) {
+    if (arg.toString(10).match(/^-?[0-9]+$/) && (arg.mul || arg.dividedToIntegerBy)) {
+      return new BN(arg.toString(10));
+    }
   }
+
+  throw new Error('[number-to-bn] while converting number ' + JSON.stringify(arg) + ' to BN.js instance, error: invalid number value. Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported.');
 }
 
 
 /***/ },
-/* 4 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 'use strict';
 
 var BN = __webpack_require__(0);
-var numberToBN = __webpack_require__(3);
+var numberToBN = __webpack_require__(2);
 
 var zero = new BN(0);
 var negative1 = new BN(-1);
@@ -5539,7 +5513,7 @@ module.exports = {
 };
 
 /***/ },
-/* 5 */
+/* 4 */
 /***/ function(module, exports) {
 
 "use strict";
@@ -5660,7 +5634,7 @@ function fromByteArray (uint8) {
 
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -5750,6 +5724,25 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+/**
+ * Returns a `Boolean` on whether or not the a `String` starts with '0x'
+ * @param {String} str the string input value
+ * @return {Boolean} a boolean if it is or is not hex prefixed
+ * @throws if the str input is not a string
+ */
+module.exports = function isHexPrefixed(str) {
+  if (typeof str !== 'string') {
+    throw new Error("[is-hex-prefixed] value must be type 'string', is currently type " + (typeof str) + ", while checking isHexPrefixed.");
+  }
+
+  return str.slice(0, 2) === '0x';
+}
+
+
+/***/ },
 /* 7 */
 /***/ function(module, exports) {
 
@@ -5764,7 +5757,7 @@ module.exports = Array.isArray || function (arr) {
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-var isHexPrefixed = __webpack_require__(2);
+var isHexPrefixed = __webpack_require__(6);
 
 /**
  * Removes '0x' from a given `String` is present

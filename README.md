@@ -65,6 +65,10 @@ A port from the `web3.js` library, that just handles the unit convertion between
 
 Note, the `toWei` returns a BN instance while `fromWei` always returns a string number.
 
+## Amorphic Data Formatting
+
+`ethjs-unit` uses the [number-to-bn](http://github.com/silentcicero/number-to-bn) module to format all number values (hex or otherwise) into digestable BN.js number instances.
+
 ## Methods Available & Objects
 
 ```
