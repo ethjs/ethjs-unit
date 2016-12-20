@@ -1,3 +1,7 @@
+# 0.1.5 -- update bn formatting
+
+1. Update bn formatting
+
 # 0.1.3 -- config fixes
 
 1. webpack config updates
