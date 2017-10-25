@@ -1,3 +1,11 @@
+/*
+Primary Attribution
+Richard Moore <ricmoo@me.com>
+https://github.com/ethers-io
+
+Note, Richard is a god of ether gods. Follow and respect him, and use Ethers.io!
+*/
+
 const BN = require('bn.js');
 const numberToBN = require('number-to-bn');
 
