@@ -42,7 +42,10 @@ describe('toWei', () => {
     assert.equal(units.toWei(0, 'wei').toString(10), '0');
     assert.equal(units.toWei('0.0', 'wei').toString(10), '0');
     assert.equal(units.toWei('.3', 'ether').toString(10), '300000000000000000');
+    assert.equal(units.toWei('0.1', 'noether').toString(10), '0');
+    assert.equal(units.toWei('23445.13253535', 'noether').toString(10), '0');
     assert.throws(() => units.toWei('.', 'wei'), Error);
+    assert.throws(() => units.toWei('0.1', 'wei'), Error);
     assert.throws(() => units.toWei('1.243842387924387924897423897423', 'ether'), Error);
     assert.throws(() => units.toWei('8723.98234.98234', 'ether'), Error);
   });
@@ -106,9 +109,11 @@ describe('numberToString', () => {
 describe('fromWei', () => {
   it('should handle options', () => {
     assert.equal(units.fromWei(10000000, 'wei', { commify: true }), '10,000,000');
+    assert.equal(units.fromWei(10000000, 'kwei', { pad: true }), '10000.000');
   });
 
   it('should return the correct value', () => {
+    assert.equal(units.fromWei(1000000000000000000, 'noether'), '0');
     assert.equal(units.fromWei(1000000000000000000, 'wei'), '1000000000000000000');
     assert.equal(units.fromWei(1000000000000000000, 'kwei'), '1000000000000000');
     assert.equal(units.fromWei(1000000000000000000, 'mwei'), '1000000000000');
@@ -116,6 +121,7 @@ describe('fromWei', () => {
     assert.equal(units.fromWei(1000000000000000000, 'szabo'), '1000000');
     assert.equal(units.fromWei(1000000000000000000, 'finney'), '1000');
     assert.equal(units.fromWei(1000000000000000000, 'ether'), '1');
+    assert.equal(units.fromWei(1000000000000000000), '1'); // test default to ether
     assert.equal(units.fromWei(1000000000000000000, 'kether'), '0.001');
     assert.equal(units.fromWei(1000000000000000000, 'grand'), '0.001');
     assert.equal(units.fromWei(1000000000000000000, 'mether'), '0.000001');
