@@ -52,7 +52,7 @@ const unitMap = {
  * @throws error if the unit is not correct:w
  */
 function getValueOfUnit(unitInput) {
-  const unit = unitInput ? unitInput.toLowerCase() : 'ether';
+  const unit = formatUnit(unitInput);
   var unitValue = unitMap[unit]; // eslint-disable-line
 
   if (typeof unitValue !== 'string') {
@@ -60,6 +60,10 @@ function getValueOfUnit(unitInput) {
   }
 
   return new BN(unitValue, 10);
+}
+
+function formatUnit(unitInput) {
+  return unitInput ? unitInput.toLowerCase() : 'ether';
 }
 
 function numberToString(arg) {
@@ -84,7 +88,11 @@ function fromWei(weiInput, unit, optionsInput) {
   var wei = numberToBN(weiInput); // eslint-disable-line
   var negative = wei.lt(zero); // eslint-disable-line
   const base = getValueOfUnit(unit);
-  const baseLength = unitMap[unit].length - 1 || 1;
+  const formattedUnit = formatUnit(unit);
+  if (formattedUnit === 'noether') {
+    return '0';
+  }
+  const baseLength = unitMap[formattedUnit].length - 1 || 1;
   const options = optionsInput || {};
 
   if (negative) {
@@ -119,7 +127,11 @@ function fromWei(weiInput, unit, optionsInput) {
 function toWei(etherInput, unit) {
   var ether = numberToString(etherInput); // eslint-disable-line
   const base = getValueOfUnit(unit);
-  const baseLength = unitMap[unit].length - 1 || 1;
+  const formattedUnit = formatUnit(unit);
+  if (formattedUnit === 'noether') {
+    return zero;
+  }
+  const baseLength = unitMap[formattedUnit].length - 1 || 1;
 
   // Is it negative?
   var negative = (ether.substring(0, 1) === '-'); // eslint-disable-line
@@ -137,7 +149,7 @@ function toWei(etherInput, unit) {
 
   if (!whole) { whole = '0'; }
   if (!fraction) { fraction = '0'; }
-  if (fraction.length > baseLength) { throw new Error(`[ethjs-unit] while converting number ${etherInput} to wei, too many decimal places`); }
+  if (fraction.length > baseLength || (formattedUnit === 'wei' && !fraction.match(/^0+$/))) { throw new Error(`[ethjs-unit] while converting number ${etherInput} to wei, too many decimal places`); }
 
   while (fraction.length < baseLength) {
     fraction += '0';
