@@ -75,6 +75,10 @@ describe('toWei', () => {
 
     assert.throws(() => { units.toWei(1, 'wei1'); }, Error);
   });
+
+  it('should return the correct value for small numbers', () => {
+    assert.equal(units.toWei(1e-7, 'gwei').toString(10), '100');
+  });
 });
 
 describe('numberToString', () => {
