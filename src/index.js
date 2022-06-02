@@ -69,7 +69,8 @@ function numberToString(arg) {
     }
     return arg;
   } else if (typeof arg === 'number') {
-    return String(arg);
+    const fixedString = arg.toFixed(20); // 20 is the max safe value according to the standard
+    return fixedString.replace(/(\.0+|0+)$/g, ''); // trimming of extra zeroes from the end
   } else if (typeof arg === 'object' && arg.toString && (arg.toTwos || arg.dividedToIntegerBy)) {
     if (arg.toPrecision) {
       return String(arg.toPrecision());
