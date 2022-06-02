@@ -69,7 +69,15 @@ function numberToString(arg) {
     }
     return arg;
   } else if (typeof arg === 'number') {
-    return String(arg);
+    if (arg === -0) {
+      return '0';
+    }
+    // Using Intl to reliably convert number to string,
+    // toString/toFixed will give incorrect results for some numbers
+    return arg.toLocaleString('en', {
+      maximumFractionDigits: 20,
+      useGrouping: false,
+    });
   } else if (typeof arg === 'object' && arg.toString && (arg.toTwos || arg.dividedToIntegerBy)) {
     if (arg.toPrecision) {
       return String(arg.toPrecision());
