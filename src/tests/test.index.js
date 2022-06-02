@@ -74,6 +74,8 @@ describe('toWei', () => {
     assert.equal(units.toWei(1, 'milli').toString(10), units.toWei(1000, 'micro').toString(10));
 
     assert.throws(() => { units.toWei(1, 'wei1'); }, Error);
+
+    assert.equal(units.toWei(0.1, 'gwei').toString(10), '100000000');
   });
 
   it('should return the correct value for small numbers', () => {
